@@ -20,9 +20,13 @@ public:
 
 protected:
 	PhysicsPlaygroundListener listener;
-	int ball = 0;
-	int bomb = 0;
-	int sword = 0;
+	int ball;
+	int bomb;
+	int explosion;
+	int sword;
+	int witcher;
+
+	int directionMod = 1;
 
 	double previousTime = 0.f;
 	double currentTime = 0.f;

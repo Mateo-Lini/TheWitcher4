@@ -53,7 +53,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 
 		//Creates entity
 		auto entity = ECS::CreateEntity();
-
+		
 		//Add components
 		ECS::AttachComponent<Sprite>(entity);
 		ECS::AttachComponent<Transform>(entity);
@@ -71,6 +71,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 
 		auto entity = ECS::CreateEntity();
 		ECS::SetIsMainPlayer(entity, true);
+		witcher = entity;
 
 		//Add components
 		ECS::AttachComponent<Sprite>(entity);
@@ -79,8 +80,8 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<CanJump>(entity);
 
 		//Sets up the components
-		std::string fileName = "LinkStandby.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 40, 30);
+		std::string fileName = "witcher.gif";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 40, 40);
 		ECS::GetComponent<Sprite>(entity).SetTransparency(1.f);
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 30.f, 2.f));
 
@@ -98,7 +99,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
 		//tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, PLAYER, ENEMY | OBJECTS | PICKUP | TRIGGER, 0.5f, 3.f);
-		tempPhsBody = PhysicsBody(entity, tempBody, float((tempSpr.GetHeight() - shrinkY)/2.f), vec2(0.f, 0.f), false, PLAYER, ENEMY | OBJECTS | PICKUP | TRIGGER, 0.5f, 3.f);
+		tempPhsBody = PhysicsBody(entity, tempBody, tempSpr.GetWidth()/2, tempSpr.GetHeight(), vec2(0.f, 0.f), false, PLAYER, ENEMY | OBJECTS | PICKUP | TRIGGER, 0.5f, 3.f);
 
 		tempPhsBody.SetRotationAngleDeg(0.f);
 		tempPhsBody.SetFixedRotation(true);
@@ -462,157 +463,15 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 	//	tempPhsBody.SetRotationAngleDeg(90.f);
 	//}
 
-	//Bomb
-	{
-		auto entity = ECS::CreateEntity();
-		bomb = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-
-		//Sets up the components
-		std::string fileName = "bomb.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 8.5, 10);
-		ECS::GetComponent<Sprite>(entity).SetTransparency(0.f);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(45.f, -8.f, 3.f));
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(0.f), float32(0.f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		//tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false);
-		tempPhsBody = PhysicsBody(entity, tempBody, float((tempSpr.GetWidth() - shrinkY) / 2.f), vec2(0.f, 0.f), false, OBJECTS, GROUND | ENVIRONMENT | PLAYER | TRIGGER, 0.3f);
-
-		tempPhsBody.SetColor(vec4(1.f, 0.f, 1.f, 0.3f));
-
-		tempPhsBody.DeleteBody();
-
-	}
-
-	//Sword 
-	{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-		sword = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-
-		//Sets up components
-		std::string fileName = "sword.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 12, 48);
-		ECS::GetComponent<Sprite>(entity).SetTransparency(1.f);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_staticBody;
-		tempDef.position.Set(float32(0.f), float32(0.f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, ENVIRONMENT, ENEMY);
-		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
-		tempPhsBody.SetRotationAngleDeg(90.f);
-
-		tempPhsBody.DeleteBody();
-
-	}
-
-	//Ball
-	/*{
-		auto entity = ECS::CreateEntity();
-		ball = entity;
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-
-		//Sets up the components
-		std::string fileName = "BeachBall.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 20, 20);
-		ECS::GetComponent<Sprite>(entity).SetTransparency(1.f);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(45.f, -8.f, 3.f));
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(45.f), float32(-8.f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		//tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false);
-		tempPhsBody = PhysicsBody(entity, tempBody, float((tempSpr.GetWidth() - shrinkY) / 2.f), vec2(0.f, 0.f), false, OBJECTS, GROUND | ENVIRONMENT | PLAYER | TRIGGER, 0.3f);
-
-		tempPhsBody.SetColor(vec4(1.f, 0.f, 1.f, 0.3f));
-	}*/
-
-	//Setup trigger
-	/*{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-		ECS::AttachComponent<Trigger*>(entity);
-		
-		//Sets up components
-		std::string fileName = "boxSprite.jpg";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 40, 40);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 80.f));
-		ECS::GetComponent<Trigger*>(entity) = new DestroyTrigger();
-		ECS::GetComponent<Trigger*>(entity)->SetTriggerEntity(entity);
-		ECS::GetComponent<Trigger*>(entity)->AddTargetEntity(ball);
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_staticBody;
-		tempDef.position.Set(float32(300.f), float32(-30.f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), true, TRIGGER, PLAYER | OBJECTS);
-		tempPhsBody.SetColor(vec4(1.f, 0.f, 0.f, 0.3f));
-	}*/
-
 	ECS::GetComponent<HorizontalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
 	ECS::GetComponent<VerticalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
+
 }
 
 void PhysicsPlayground::Update()
 {
-	
+	ECS::GetComponent<HorizontalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
+	ECS::GetComponent<VerticalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
 }
 
 
@@ -648,27 +507,45 @@ void PhysicsPlayground::KeyboardHold()
 		facingLeft = false;
 	}
 
-	int directionMod;
-
-	if (facingRight) {
-
-		directionMod = 1;
-
-	}
-	if (facingLeft) {
-
-		directionMod = -1;
-
-	}
-
 	/*
 	Sword
 	*/
 
-	if (Input::GetKey(Key::E) && !swordSwinging) {
 
-		auto& entity = sword;
+	// Sword Order
+	// 1. Player Swings Sword
+	// 2. Sword Swings
+	// 3. Sword Stops
+
+	// 1.
+	if (Input::GetKey(Key::F) && !swordSwinging) {
+
+		if (facingRight) {
+
+			directionMod = 1;
+
+		}
+		if (facingLeft) {
+
+			directionMod = -1;
+
+		}
+
 		swordSwinging = true;
+
+		//Creates entity
+		auto entity = ECS::CreateEntity();
+		sword = entity;
+
+		//Add components
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<PhysicsBody>(entity);
+
+		//Sets up components
+		std::string fileName = "sword.png";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 12, 48);
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
 
 		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
@@ -678,33 +555,34 @@ void PhysicsPlayground::KeyboardHold()
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_staticBody;
-		tempDef.position.Set(player.GetPosition().x + (25 * directionMod), player.GetPosition().y);
+		tempDef.position.Set(player.GetPosition().x + (40 * directionMod), player.GetPosition().y);
 
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, TRIGGER, ENEMY);
-		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
+		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, ENVIRONMENT, ENEMY);
+		tempPhsBody.SetColor(vec4(1.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(-45.f * directionMod);
 
-	
 	}
+	
+	// 2.
 	if (swordSwinging && swordTime < 0.5) {
 	
 		swordTime += Timer::deltaTime;
-
-		auto& entity = sword;
-		ECS::GetComponent<PhysicsBody>(entity).SetRotationAngleDeg(ECS::GetComponent<PhysicsBody>(entity).GetRotationAngleDeg() - 1 * directionMod);
+		ECS::GetComponent<PhysicsBody>(sword).SetRotationAngleDeg(ECS::GetComponent<PhysicsBody>(sword).GetRotationAngleDeg() - 1 * directionMod);
+		ECS::GetComponent<PhysicsBody>(sword).SetPosition(b2Vec2(player.GetPosition().x + (40 * directionMod), player.GetPosition().y));
 
 	}
+	
+	// 3.
 	else if (swordSwinging && swordTime > 0.5) {
 
 		swordTime = 0.f;
 		swordSwinging = false;
-
+		ECS::GetComponent<PhysicsBody>(sword).DeleteBody();
+		ECS::DestroyEntity(sword);
 
 	}
-
-
 
 	/*
 	Bomb
@@ -717,22 +595,49 @@ void PhysicsPlayground::KeyboardHold()
 	// 4. Explosion Stops
 	
 	// 1.
-	if (Input::GetKey(Key::F) && !bombThrown) {
+	if (Input::GetKey(Key::E) && !bombThrown) {
 
-		auto& entity = bomb;
-		ECS::GetComponent<Sprite>(entity).SetTransparency(1.f);
+		if (facingRight) {
+
+			directionMod = 1;
+
+		}
+		if (facingLeft) {
+
+			directionMod = -1;
+
+		}
+
 		bombThrown = true;
+		
+		auto entity = ECS::CreateEntity();
+		bomb = entity;
+
+		//Add components
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<PhysicsBody>(entity);
+
+		//Sets up the components
+		std::string fileName = "bomb.png";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 8.5, 10);
+		ECS::GetComponent<Sprite>(bomb).SetTransparency(1.f);
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(45.f, -8.f, 3.f));
+
+
+		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
+		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
 
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_dynamicBody;
 		tempDef.position.Set(float32(player.GetPosition().x + (25 * directionMod)), float32(player.GetPosition().y));
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
-		ECS::GetComponent<PhysicsBody>(entity) = PhysicsBody(entity, tempBody, 4.5, vec2(0.f, 0.f), false, OBJECTS, GROUND | ENVIRONMENT | PLAYER | TRIGGER, 0.3f);
+		ECS::GetComponent<PhysicsBody>(bomb) = PhysicsBody(bomb, tempBody, 4.5, vec2(0.f, 0.f), false, OBJECTS, GROUND | ENVIRONMENT | PLAYER | TRIGGER, 0.3f);
 
-		ECS::GetComponent<PhysicsBody>(entity).GetBody()->ApplyForceToCenter(b2Vec2(800000.f * directionMod * speed, 0.f), true);
-		ECS::GetComponent<PhysicsBody>(entity).GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.f, 20000.f), true);
-
+		// Launches Bomb
+		ECS::GetComponent<PhysicsBody>(bomb).GetBody()->ApplyForceToCenter(b2Vec2(800000.f * directionMod * speed, 0.f), true);
+		ECS::GetComponent<PhysicsBody>(bomb).GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.f, 20000.f), true);
 
 	}
 	
@@ -744,26 +649,39 @@ void PhysicsPlayground::KeyboardHold()
 	}
 	
 	// 3.
-	else if (bombThrown && bombTime > 1.f && bombTime < 1.5f) {
+	else if (bombThrown && bombTime > 1.f && bombTime < 2.5f) {
 
 		if (!bombExploded) {
 
-			bombExploded = true;
-			auto entity = bomb;
+			bombExploded = true; 
 			
-			b2Vec2 pos = ECS::GetComponent<PhysicsBody>(entity).GetPosition();
-			ECS::GetComponent<PhysicsBody>(entity).DeleteBody();
+			// Stores the position of the bomb then deletes it
+			b2Vec2 pos = ECS::GetComponent<PhysicsBody>(bomb).GetPosition();
+
+			// Deletes the Bomb
+			ECS::GetComponent<PhysicsBody>(bomb).DeleteBody();
+			ECS::DestroyEntity(bomb);
+			
+			auto entity = ECS::CreateEntity();
+			explosion = entity;
+
+			//Add components
+			ECS::AttachComponent<Sprite>(entity);
+			ECS::AttachComponent<Transform>(entity);
+			ECS::AttachComponent<PhysicsBody>(entity);
+
+			//Sets up the components
+			std::string fileName = "boom.png";
+			ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 100, 100);
+			ECS::GetComponent<Sprite>(entity).SetTransparency(1.f);
+			ECS::GetComponent<Transform>(entity).SetPosition(vec3(45.f, -8.f, 3.f));
 
 			b2Body* tempBody;
 			b2BodyDef tempDef;
 			tempDef.type = b2_staticBody;
-			tempDef.position.Set(pos.x, pos.y);
+			tempDef.position.Set(pos.x, pos.y+50);
 			tempBody = m_physicsWorld->CreateBody(&tempDef);
-			ECS::GetComponent<PhysicsBody>(entity) = PhysicsBody(entity, tempBody, 10, vec2(0.f, 0.f), false, OBJECTS, GROUND | ENVIRONMENT | TRIGGER, 0.3f);
-
-			ECS::GetComponent<Sprite>(entity).SetTransparency(0.f);
-			ECS::GetComponent<PhysicsBody>(entity).ScaleBody(750.f * Timer::deltaTime, 0);
-			ECS::GetComponent<PhysicsBody>(entity).SetRotationAngleDeg(0.f);
+			ECS::GetComponent<PhysicsBody>(entity) = PhysicsBody(entity, tempBody, 85, vec2(0.f, 0.f), false, OBJECTS, GROUND | ENVIRONMENT | TRIGGER, 0.3f);
 		
 		}
 
@@ -772,13 +690,15 @@ void PhysicsPlayground::KeyboardHold()
 	}
 	
 	// 4.
-	else if (bombThrown && bombTime > 1.5f) {
+	else if (bombThrown && bombTime > 2.5f) {
 
 		bombExploded = false;
 		bombTime = 0.f;
 		bombThrown = false;
-		auto entity = bomb;
-		ECS::GetComponent<PhysicsBody>(entity).DeleteBody();
+		
+		// Deletes the Explosion
+		ECS::GetComponent<PhysicsBody>(explosion).DeleteBody();
+		ECS::DestroyEntity(explosion);
 
 	}
 
@@ -787,9 +707,7 @@ void PhysicsPlayground::KeyboardHold()
 	Scaling
 	*/
 	
-
-	//Change physics body size for circle
-	
+	//Change physics body size for circle	
 	// +
 	if (Input::GetKey(Key::O))
 	{
