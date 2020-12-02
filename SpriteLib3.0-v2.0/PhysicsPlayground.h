@@ -25,6 +25,7 @@ protected:
 	int explosion;
 	int sword;
 	int witcher;
+	int witcher2;
 
 	int directionMod = 1;
 
