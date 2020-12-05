@@ -20,6 +20,7 @@ public:
 	
 protected:
 	PhysicsPlaygroundListener listener;
+<<<<<<< HEAD
 	int ball = 0;
 	int bomb = 0;
 	int explosion = 0;
@@ -27,6 +28,14 @@ protected:
 	int witcher = 0;
 	int bandit = 0;
 	int bandit2 = 0;
+=======
+	int ball;
+	int bomb;
+	int explosion;
+	int sword;
+	int witcher;
+	int witcher2;
+>>>>>>> main
 
 	int ui = 0;
 	int village = 0;
