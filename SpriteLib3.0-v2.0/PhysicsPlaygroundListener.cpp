@@ -1,5 +1,4 @@
 #include "PhysicsPlaygroundListener.h"
-
 #include "ECS.h"
 
 PhysicsPlaygroundListener::PhysicsPlaygroundListener()
@@ -43,6 +42,43 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 			ECS::GetComponent<CanJump>((int)fixtureB->GetBody()->GetUserData()).m_canJump = true;
 		}
 	}
+	 
+	std::cout << "Collision:\n";
+	std::cout << filterA.categoryBits << "\n";
+	std::cout << filterB.categoryBits << "\n";
+
+	// BANDIT 1
+	if ((filterA.categoryBits == ENEMY && filterB.categoryBits == EXPLOSION) || (filterB.categoryBits == ENEMY && filterA.categoryBits == EXPLOSION) ||
+		(filterA.categoryBits == ENEMY && filterB.categoryBits == OBJECTS) || (filterB.categoryBits == ENEMY && filterA.categoryBits == OBJECTS))
+	{
+		if (filterA.categoryBits == ENEMY)
+		{
+			ECS::RemoveComponent<PhysicsBody>((int)fixtureA->GetBody()->GetUserData());
+			ECS::DestroyEntity((int)fixtureA->GetBody()->GetUserData());
+		}
+		else if (filterB.categoryBits == ENEMY)
+		{
+			ECS::RemoveComponent<PhysicsBody>((int)fixtureB->GetBody()->GetUserData());
+			ECS::DestroyEntity((int)fixtureB->GetBody()->GetUserData());
+		}
+	}
+
+	// BANDIT 2
+	if ((filterA.categoryBits == ENEMY2 && filterB.categoryBits == EXPLOSION) || (filterB.categoryBits == ENEMY2 && filterA.categoryBits == EXPLOSION) ||
+		(filterA.categoryBits == ENEMY2 && filterB.categoryBits == OBJECTS) || (filterB.categoryBits == ENEMY2 && filterA.categoryBits == OBJECTS))
+	{
+		if (filterA.categoryBits == ENEMY2)
+		{
+			ECS::RemoveComponent<PhysicsBody>((int)fixtureA->GetBody()->GetUserData());
+			ECS::DestroyEntity((int)fixtureA->GetBody()->GetUserData());
+		}
+		else if (filterB.categoryBits == ENEMY2)
+		{
+			ECS::RemoveComponent<PhysicsBody>((int)fixtureB->GetBody()->GetUserData());
+			ECS::DestroyEntity((int)fixtureB->GetBody()->GetUserData());
+		}
+	}
+
 
 }
 

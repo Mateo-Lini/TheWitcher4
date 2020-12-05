@@ -48,7 +48,7 @@ void Scene::InitScene(float windowWidth, float windowHeight)
 		//Creates new orthographic camera
 		ECS::AttachComponent<Camera>(entity);
 		//ECS::AttachComponent<HorizontalScroll>(entity);
-		vec4 temp = vec4(-75.f, 75.f, -75.f, 75.f);
+		vec4 temp = vec4(-115.f, 115.f, -115.f, 115.f);
 		ECS::GetComponent<Camera>(entity).SetOrthoSize(temp);
 		ECS::GetComponent<Camera>(entity).SetWindowSize(vec2(float(windowWidth), float(windowHeight)));
 		ECS::GetComponent<Camera>(entity).Orthographic(aspectRatio, temp.x, temp.y, temp.z, temp.w, -100.f, 100.f);

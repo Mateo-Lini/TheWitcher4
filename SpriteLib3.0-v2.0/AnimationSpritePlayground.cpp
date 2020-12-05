@@ -29,7 +29,7 @@ void AnimationSpritePlayground::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<HorizontalScroll>(entity);
 		ECS::AttachComponent<VerticalScroll>(entity);
 
-		vec4 temp = vec4(-75.f, 75.f, -75.f, 75.f);
+		vec4 temp = vec4(-200.f, 200.f, -200.f, 200.f);
 		ECS::GetComponent<Camera>(entity).SetOrthoSize(temp);
 		ECS::GetComponent<Camera>(entity).SetWindowSize(vec2(float(windowWidth), float(windowHeight)));
 		ECS::GetComponent<Camera>(entity).Orthographic(aspectRatio, temp.x, temp.y, temp.z, temp.w, -100.f, 100.f);

@@ -17,19 +17,28 @@ public:
 	void KeyboardHold() override;
 	void KeyboardDown() override;
 	void KeyboardUp() override;
-
+	
 protected:
 	PhysicsPlaygroundListener listener;
-	int ball;
-	int bomb;
-	int explosion;
-	int sword;
-	int witcher;
+	int ball = 0;
+	int bomb = 0;
+	int explosion = 0;
+	int sword = 0;
+	int witcher = 0;
+	int bandit = 0;
+	int bandit2 = 0;
+
+	int ui = 0;
+	int village = 0;
+	
+	int width;
+	int height;
+
+	int camera = 0;
+
+	bool changeSword = false;
 
 	int directionMod = 1;
-
-	double previousTime = 0.f;
-	double currentTime = 0.f;
 
 	bool facingRight = true;
 	bool facingLeft = false;
