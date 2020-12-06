@@ -29,6 +29,7 @@ protected:
 	int witcher = 0;
 	int witcher2 = 0;
 
+
 	int ui = 0;
 	int village = 0;
 
