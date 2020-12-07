@@ -179,6 +179,7 @@
     <ClInclude Include="SepiaEffect.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Sword.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Timer.h" />
@@ -194,6 +195,8 @@
     <ClInclude Include="Xinput.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HP.cpp" />
+    <ClCompile Include="HP.h" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AnimationSpritePlayground.cpp" />
     <ClCompile Include="AnimationSystem.cpp" />
@@ -235,6 +238,7 @@
     <ClCompile Include="SepiaEffect.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Sword.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Timer.cpp" />

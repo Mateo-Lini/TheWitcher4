@@ -50,18 +50,54 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 		(filterB.categoryBits == ENEMY && filterA.categoryBits == OBJECTS))
 	
 	{
+
 		if (filterA.categoryBits == ENEMY)
 		{
 
 			int entityId = (int)fixtureA->GetBody()->GetUserData();
-			ECS::GetComponent<Sprite>(entityId).SetTransparency(0.f);
+			
+			if (filterB.categoryBits == OBJECTS) {
+			
+				ECS::GetComponent<HP>(entityId).m_health = ECS::GetComponent<HP>(entityId).m_health - 1;
+			
+			}
+			else if (filterB.categoryBits == EXPLOSION) {
+
+				ECS::GetComponent<HP>(entityId).m_health = ECS::GetComponent<HP>(entityId).m_health - 2;
+
+			}
+			
+			if (ECS::GetComponent<HP>(entityId).m_health == 0) {
+			
+				std::string fileName = "banditdead.png";
+				ECS::GetComponent<Sprite>(entityId).LoadSprite(fileName, 40, 40);
+
+			}
 
 		}
 		else if (filterB.categoryBits == ENEMY)
 		{
 			
 			int entityId = (int)fixtureB->GetBody()->GetUserData();
-			ECS::GetComponent<Sprite>(entityId).SetTransparency(0.f);
+			
+			if (filterA.categoryBits == OBJECTS) {
+
+				ECS::GetComponent<HP>(entityId).m_health = ECS::GetComponent<HP>(entityId).m_health - 1;
+
+			}
+			else if (filterA.categoryBits == EXPLOSION) {
+
+				ECS::GetComponent<HP>(entityId).m_health = ECS::GetComponent<HP>(entityId).m_health - 2;
+
+			}
+
+			if (ECS::GetComponent<HP>(entityId).m_health == 0)
+			{
+			
+				std::string fileName = "banditdead.png";
+				ECS::GetComponent<Sprite>(entityId).LoadSprite(fileName, 40, 40);
+
+			}
 
 		}
 	}

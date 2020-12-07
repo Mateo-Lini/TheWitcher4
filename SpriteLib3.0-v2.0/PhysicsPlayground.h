@@ -26,6 +26,9 @@ protected:
 	int sword = 0;
 	int bandit = 0;
 	int bandit2 = 0;
+	int bandithp = 5;
+	int bandit2hp = 5;
+
 	int witcher = 0;
 	int witcher2 = 0;
 
@@ -35,9 +38,10 @@ protected:
 
 	int camera = 0;
 
-	bool changeSword = false;
-
 	int directionMod = 1;
+
+	double dashTime = 0.f;
+	bool dashing = false;
 
 	bool facingRight = true;
 	bool facingLeft = false;
