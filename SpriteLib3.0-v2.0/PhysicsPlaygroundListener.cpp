@@ -42,8 +42,22 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 			ECS::GetComponent<CanJump>((int)fixtureB->GetBody()->GetUserData()).m_canJump = true;
 		}
 	}
+	
+	// Player Damage
+	if ((filterA.categoryBits == PLAYER && filterB.categoryBits == ENEMY) || (filterB.categoryBits == PLAYER && filterA.categoryBits == ENEMY))
+	{
+		if (filterA.categoryBits == PLAYER && ECS::GetComponent<HP>((int)fixtureB->GetBody()->GetUserData()).m_health > 0)
+		{
+			ECS::GetComponent<HP>((int)fixtureA->GetBody()->GetUserData()).m_health--;
+		}
+		else if (filterB.categoryBits == PLAYER && ECS::GetComponent<HP>((int)fixtureA->GetBody()->GetUserData()).m_health > 0)
+		{
+			ECS::GetComponent<HP>((int)fixtureA->GetBody()->GetUserData()).m_health--;
+		}
+	}
 
-	// BANDIT
+
+	// Player Attack Bandit
 	if ((filterA.categoryBits == ENEMY && filterB.categoryBits == EXPLOSION) || 
 		(filterB.categoryBits == ENEMY && filterA.categoryBits == EXPLOSION) ||
 		(filterA.categoryBits == ENEMY && filterB.categoryBits == OBJECTS) || 
@@ -58,7 +72,7 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 			
 			if (filterB.categoryBits == OBJECTS) {
 			
-				ECS::GetComponent<HP>(entityId).m_health = ECS::GetComponent<HP>(entityId).m_health - 1;
+				ECS::GetComponent<HP>(entityId).m_health--;
 			
 			}
 			else if (filterB.categoryBits == EXPLOSION) {
@@ -69,8 +83,11 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 			
 			if (ECS::GetComponent<HP>(entityId).m_health <= 0) {
 			
-				std::string fileName = "banditdead.png";
-				ECS::GetComponent<Sprite>(entityId).LoadSprite(fileName, 40, 40);
+				int spriteHeight = ECS::GetComponent<Sprite>(entityId).GetHeight();
+				int spriteWidth = ECS::GetComponent<Sprite>(entityId).GetWidth();
+				
+				std::string fileName = ECS::GetComponent<Sprite>(entityId).GetFileName().substr(0, ECS::GetComponent<Sprite>(entityId).GetFileName().length() - 4) + "dead.png";
+				ECS::GetComponent<Sprite>(entityId).LoadSprite(fileName, spriteWidth, spriteHeight);
 
 			}
 
@@ -82,7 +99,7 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 			
 			if (filterA.categoryBits == OBJECTS) {
 
-				ECS::GetComponent<HP>(entityId).m_health = ECS::GetComponent<HP>(entityId).m_health - 1;
+				ECS::GetComponent<HP>(entityId).m_health--;
 
 			}
 			else if (filterA.categoryBits == EXPLOSION) {
@@ -91,11 +108,13 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 
 			}
 
-			if (ECS::GetComponent<HP>(entityId).m_health == 0)
-			{
-			
-				std::string fileName = "banditdead.png";
-				ECS::GetComponent<Sprite>(entityId).LoadSprite(fileName, 40, 40);
+			if (ECS::GetComponent<HP>(entityId).m_health <= 0)	{
+
+				int spriteHeight = ECS::GetComponent<Sprite>(entityId).GetHeight();
+				int spriteWidth = ECS::GetComponent<Sprite>(entityId).GetWidth();
+				
+				std::string fileName = ECS::GetComponent<Sprite>(entityId).GetFileName();
+				ECS::GetComponent<Sprite>(entityId).LoadSprite(fileName, 40 * (spriteWidth / 30), 40 * (spriteHeight / 50));
 
 			}
 

@@ -11,7 +11,11 @@ public:
 
 	void InitScene(float windowWidth, float windowHeight) override;
 
-	void MakeBandit(std::string fileName, float32 x, float32 y);
+	void MakePlatform(std::string fileName, float32 x, float32 y, int fx, int fy);
+
+	void MakeRamp(std::string fileName, float32 x, float32 y, int fx, int fy, float rotation);
+
+	void MakeEnemy(std::string fileName, float32 x, float32 y, int fx, int fy);
 
 	void Update() override;
 
@@ -28,12 +32,11 @@ protected:
 	int sword = 0;
 
 	int witcher = 0;
-	int witcher2 = 0;
+	int witcherHP = 0;
 
-	std::vector<int> bandit;
-	std::vector<int> banditHP;
+	std::vector<int> enemy;
+	std::vector<int> enemyHP;
 
-	int ui = 0;
 	int village = 0;
 
 	int camera = 0;
