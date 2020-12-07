@@ -1,6 +1,7 @@
 #include "PhysicsPlayground.h"
 #include "Utilities.h"
 
+#include <iostream>
 #include <random>
 #include <string>
 
@@ -80,8 +81,8 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(4480.f), float32(650.f));
-
+		//tempDef.position.Set(float32(4480.f), float32(650.f));
+		tempDef.position.Set(float32(1520.f), float32(50.f));
 
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
@@ -532,107 +533,6 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		ECS::GetComponent<Sprite>(entity).SetTransparency(1.f);
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(390.f, 37.f, 0.f));
 	}
-
-	// Bandit
-	{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-		bandit = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-		ECS::AttachComponent<Trigger*>(entity);
-		ECS::AttachComponent<HP>(entity);
-
-		//Sets up components
-		std::string fileName = "bandit.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 30, 50);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
-		ECS::GetComponent<Trigger*>(entity) = new DestroyTrigger();
-		ECS::GetComponent<Trigger*>(entity)->SetTriggerEntity(entity);
-		ECS::GetComponent<Trigger*>(entity)->AddTargetEntity(entity);
-		ECS::GetComponent<Trigger*>(entity)->AddTargetEntity(sword);
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(1520.f), float32(50.f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX),
-			float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, ENEMY, GROUND | BOMB | EXPLOSION);
-		tempPhsBody.SetColor(vec4(0.f, 1.f, 1.f, 0.3f));
-	}
-
-	// Bandit HP
-	{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-		bandithp = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-	
-	}
-
-	// Bandit 2
-	{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-		bandit2 = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-		ECS::AttachComponent<Trigger*>(entity);
-		ECS::AttachComponent<HP>(entity);
-
-		//Sets up components
-		std::string fileName = "bandit2.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 30, 50);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
-		ECS::GetComponent<Trigger*>(entity) = new DestroyTrigger();
-		ECS::GetComponent<Trigger*>(entity)->SetTriggerEntity(entity);
-		ECS::GetComponent<Trigger*>(entity)->AddTargetEntity(sword);
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(1100.f), float32(50.f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX),
-			float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, ENEMY, GROUND | BOMB | EXPLOSION);
-		tempPhsBody.SetColor(vec4(1.f, 1.f, 0.f, 0.5f));
-	}
-
-	// Bandit HP 2
-	{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-		bandit2hp = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-
-	} 
 
 	//Setup static wall(gate)
 	{
@@ -1750,8 +1650,64 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetRotationAngleDeg(180.f);
 	}
 
+
+	MakeBandit("bandit.png", 1520.f, 50.f);
+	MakeBandit("bandit2.png", 1100.f, 50.f);
+	
+	for (int i = 0; i < 20; i++) {
+
+		MakeBandit("bandit.png", 1000.f + (i * 50), 50.f);
+
+	}
+
+
+
 	ECS::GetComponent<HorizontalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
 	ECS::GetComponent<VerticalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
+
+}
+
+void PhysicsPlayground::MakeBandit(std::string fileName,  float32 x, float32 y) {
+
+	// BANDIT
+
+	auto entity = ECS::CreateEntity();
+	bandit.push_back(entity);
+
+	ECS::AttachComponent<Sprite>(entity);
+	ECS::AttachComponent<Transform>(entity);
+	ECS::AttachComponent<PhysicsBody>(entity);
+	ECS::AttachComponent<Trigger*>(entity);
+	ECS::AttachComponent<HP>(entity);
+
+	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 30, 50);
+	ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
+	ECS::GetComponent<Trigger*>(entity) = new DestroyTrigger();
+	ECS::GetComponent<Trigger*>(entity)->SetTriggerEntity(entity);
+	ECS::GetComponent<Trigger*>(entity)->AddTargetEntity(sword);
+	ECS::GetComponent<Trigger*>(entity)->AddTargetEntity(bomb);
+
+	auto& tempSpr = ECS::GetComponent<Sprite>(entity);
+	auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
+
+	float shrinkX = 0.f;
+	float shrinkY = 0.f;
+	b2Body* tempBody;
+	b2BodyDef tempDef;
+	tempDef.type = b2_dynamicBody;
+	tempDef.position.Set(x, y);
+
+	tempBody = m_physicsWorld->CreateBody(&tempDef);
+	tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, ENEMY, GROUND | BOMB | OBJECTS);
+	tempPhsBody.SetColor(vec4(1.f, 1.f, 0.f, 0.5f));
+
+	// HP BAR
+
+	entity = ECS::CreateEntity();
+	banditHP.push_back(entity);
+
+	ECS::AttachComponent<Sprite>(entity);
+	ECS::AttachComponent<Transform>(entity);
 
 }
 
@@ -1770,35 +1726,24 @@ void PhysicsPlayground::KeyboardHold() {
 	float speed = 1.f;
 	b2Vec2 vel = b2Vec2(0.f, 0.f);
 
-	if (ECS::GetComponent<HP>(bandit).m_health <= 0) {
-
-		ECS::GetComponent<Sprite>(bandithp).SetTransparency(0.f);
+	for (int i = 0; i < bandit.size(); i++) {
 	
+		if (ECS::GetComponent<HP>(bandit[i]).m_health <= 0) {
+
+			ECS::GetComponent<Sprite>(banditHP[i]).SetTransparency(0.f);
+
+		}
+		
+		else {
+
+			std::string fileName = "hp" + std::to_string(ECS::GetComponent<HP>(bandit[i]).m_health) + ".png";
+			ECS::GetComponent<Sprite>(banditHP[i]).LoadSprite(fileName, 40, 5);
+			b2Vec2 banditPos = ECS::GetComponent<PhysicsBody>(bandit[i]).GetPosition();
+			ECS::GetComponent<Transform>(banditHP[i]).SetPosition(vec3(banditPos.x, banditPos.y + 30, 1.f));
+
+		}
+
 	}
-	else {
-
-		std::string fileName = "hp" + std::to_string(ECS::GetComponent<HP>(bandit).m_health) + ".png";
-		ECS::GetComponent<Sprite>(bandithp).LoadSprite(fileName, 40, 5);
-		b2Vec2 banditPos = ECS::GetComponent<PhysicsBody>(bandit).GetPosition();
-		ECS::GetComponent<Transform>(bandithp).SetPosition(vec3(banditPos.x, banditPos.y + 30, 1.f));
-
-	}
-
-	if (ECS::GetComponent<HP>(bandit2).m_health <= 0) {
-
-		ECS::GetComponent<HP>(bandit2).m_health = 5;
-		ECS::GetComponent<Sprite>(bandit2hp).SetTransparency(0.f);
-
-	}
-	else {
-	
-		std::string fileName = "hp" + std::to_string(ECS::GetComponent<HP>(bandit2).m_health) + ".png";
-		ECS::GetComponent<Sprite>(bandit2hp).LoadSprite(fileName, 40, 5);
-		b2Vec2 banditPos = ECS::GetComponent<PhysicsBody>(bandit2).GetPosition();
-		ECS::GetComponent<Transform>(bandit2hp).SetPosition(vec3(banditPos.x, banditPos.y + 30, 1.f));
-	
-	}
-
 
 	// Changes direction of sprite
 	if (facingRight) {
@@ -1917,16 +1862,16 @@ void PhysicsPlayground::KeyboardHold() {
 		
 		std::string fileName = "sword.png";
 
-		/*if (ECS::GetComponent<Sword>(entity).changeSword)
+		if (ECS::GetComponent<Sword>(witcher).changeSword)
 		{
 			fileName = "sword.png";
 		}
 		else
 		{
 			fileName = "sword2.png";
-		}*/
+		}
 
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 12, 48);
+		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 9, 36);
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -2000.f, 2.f));
 		ECS::GetComponent<Sprite>(entity).SetTransparency(0.f);
 
@@ -1938,11 +1883,11 @@ void PhysicsPlayground::KeyboardHold() {
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_staticBody;
-		tempDef.position.Set(player.GetPosition().x + (40 * directionMod), player.GetPosition().y);
+		tempDef.position.Set(player.GetPosition().x + (10 * directionMod), player.GetPosition().y);
 
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth()) - 6, float(tempSpr.GetHeight() - 6), vec2(0.f, 0.f), false, OBJECTS, GROUND);
+		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight()), vec2(0.f, 0.f), false, OBJECTS, GROUND);
 		tempPhsBody.SetColor(vec4(1.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(-45.f * directionMod);
 
@@ -1953,7 +1898,7 @@ void PhysicsPlayground::KeyboardHold() {
 	
 		swordTime += Timer::deltaTime;
 		ECS::GetComponent<PhysicsBody>(sword).SetRotationAngleDeg(ECS::GetComponent<PhysicsBody>(sword).GetRotationAngleDeg() - 1 * directionMod);
-		ECS::GetComponent<PhysicsBody>(sword).SetPosition(b2Vec2(player.GetPosition().x + (40 * directionMod), player.GetPosition().y));
+		ECS::GetComponent<PhysicsBody>(sword).SetPosition(b2Vec2(player.GetPosition().x + (13 * directionMod), player.GetPosition().y - 3.5));
 		ECS::GetComponent<Sprite>(sword).SetTransparency(1.f);
 
 	}
@@ -1972,7 +1917,7 @@ void PhysicsPlayground::KeyboardHold() {
 	// Change Sword
 	if (Input::GetKey(Key::G) && !swordSwinging) {
 
-		ECS::GetComponent<Sword>(witcher).changeSword = true;
+		ECS::GetComponent<Sword>(witcher).changeSword = !ECS::GetComponent<Sword>(witcher).changeSword;
 
 	}
 

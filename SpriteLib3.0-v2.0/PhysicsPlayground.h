@@ -11,6 +11,8 @@ public:
 
 	void InitScene(float windowWidth, float windowHeight) override;
 
+	void MakeBandit(std::string fileName, float32 x, float32 y);
+
 	void Update() override;
 
 	//Input overrides
@@ -24,14 +26,12 @@ protected:
 	int bomb = 0;
 	int explosion = 0;
 	int sword = 0;
-	int bandit = 0;
-	int bandit2 = 0;
-	int bandithp = 5;
-	int bandit2hp = 5;
 
 	int witcher = 0;
 	int witcher2 = 0;
 
+	std::vector<int> bandit;
+	std::vector<int> banditHP;
 
 	int ui = 0;
 	int village = 0;

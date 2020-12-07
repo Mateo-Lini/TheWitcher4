@@ -43,7 +43,7 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 		}
 	}
 
-	// BANDIT 1
+	// BANDIT
 	if ((filterA.categoryBits == ENEMY && filterB.categoryBits == EXPLOSION) || 
 		(filterB.categoryBits == ENEMY && filterA.categoryBits == EXPLOSION) ||
 		(filterA.categoryBits == ENEMY && filterB.categoryBits == OBJECTS) || 
@@ -67,7 +67,7 @@ void PhysicsPlaygroundListener::BeginContact(b2Contact* contact)
 
 			}
 			
-			if (ECS::GetComponent<HP>(entityId).m_health == 0) {
+			if (ECS::GetComponent<HP>(entityId).m_health <= 0) {
 			
 				std::string fileName = "banditdead.png";
 				ECS::GetComponent<Sprite>(entityId).LoadSprite(fileName, 40, 40);
