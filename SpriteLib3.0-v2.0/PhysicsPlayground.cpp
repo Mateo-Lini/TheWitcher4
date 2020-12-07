@@ -1,7 +1,9 @@
 #include "PhysicsPlayground.h"
 #include "Utilities.h"
 
+#include <iostream>
 #include <random>
+#include <string>
 
 PhysicsPlayground::PhysicsPlayground(std::string name)
 	: Scene(name)
@@ -24,10 +26,6 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 	//Sets up aspect ratio for the camera
 	float aspectRatio = windowWidth / windowHeight;
 
-	//
-	int width = windowWidth;
-	int height = windowHeight;
-
 	//Setup MainCamera Entity
 	{
 		/*Scene::CreateCamera(m_sceneReg, vec4(-75.f, 75.f, -75.f, 75.f), -100.f, 100.f, windowWidth, windowHeight, true, true);*/
@@ -39,6 +37,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 
 		//Creates new orthographic camera
 		ECS::AttachComponent<Camera>(entity);
+		ECS::AttachComponent<Sprite>(entity);
 		ECS::AttachComponent<HorizontalScroll>(entity);
 		ECS::AttachComponent<VerticalScroll>(entity);
 
@@ -65,13 +64,11 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<Transform>(entity);
 		ECS::AttachComponent<PhysicsBody>(entity);
 		ECS::AttachComponent<CanJump>(entity);
+		ECS::AttachComponent<Sword>(entity);
 
 		//Sets up the components
-
-
-		std::string fileName = "witcher.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 17, 40);
-
+		std::string fileName = "witcherLeft.png";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 40, 40);
 		ECS::GetComponent<Sprite>(entity).SetTransparency(1.f);
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 30.f, 2.f));
 
@@ -84,16 +81,13 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_dynamicBody;
-
-		
-
-		tempDef.position.Set(float32(30.f), float32(30.f));
-
+		//tempDef.position.Set(float32(4480.f), float32(650.f));
+		tempDef.position.Set(float32(1520.f), float32(50.f));
 
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
 		//tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, PLAYER, ENEMY | OBJECTS | PICKUP | TRIGGER, 0.5f, 3.f);
-		tempPhsBody = PhysicsBody(entity, tempBody, tempSpr.GetWidth(), tempSpr.GetHeight(), vec2(0.f, 0.f), false, PLAYER, ENEMY | OBJECTS | PICKUP | TRIGGER, 0.5f, 3.f);
+		tempPhsBody = PhysicsBody(entity, tempBody, 17, tempSpr.GetHeight(), vec2(0.f, 0.f), false, PLAYER, ENEMY | OBJECTS | PICKUP | TRIGGER, 0.5f, 3.f);
 
 		tempPhsBody.SetRotationAngleDeg(0.f);
 		tempPhsBody.SetFixedRotation(true);
@@ -714,7 +708,6 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 	}
 
-
 	// VILLAGE
 	{
 		/*Scene::CreateSprite(m_sceneReg, "HelloWorld.png", 100, 60, 0.5f, vec3(0.f, 0.f, 0.f));*/
@@ -734,140 +727,6 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(390.f, 37.f, 0.f));
 	}
 
-	// Bandit
-	{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-		bandit = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-		ECS::AttachComponent<Trigger*>(entity);
-
-		//Sets up components
-		std::string fileName = "bandit.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 30, 50);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
-		ECS::GetComponent<Trigger*>(entity) = new DestroyTrigger();
-		ECS::GetComponent<Trigger*>(entity)->SetTriggerEntity(entity);
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(1520.f), float32(50.f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX),
-		float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, ENEMY, GROUND | BOMB | EXPLOSION);
-		tempPhsBody.SetColor(vec4(0.f, 1.f, 1.f, 0.3f));
-	}
-
-	// Bandit 2
-	{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-		bandit2 = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-		ECS::AttachComponent<Trigger*>(entity);
-
-		//Sets up components
-		std::string fileName = "bandit2.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 30, 50);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
-		ECS::GetComponent<Trigger*>(entity) = new DestroyTrigger();
-		ECS::GetComponent<Trigger*>(entity)->SetTriggerEntity(entity);
-
-
-	
-
-	//Setup static Wall
-	//{
-	//	//Creates entity
-	//	auto entity = ECS::CreateEntity();
-
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_dynamicBody;
-		tempDef.position.Set(float32(1100.f), float32(50.f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX),
-			float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, ENEMY2, GROUND | BOMB | EXPLOSION);
-		tempPhsBody.SetColor(vec4(0.f, 1.f, 1.f, 0.3f));
-	}
-
-	// VILLAGE
-	{
-		/*Scene::CreateSprite(m_sceneReg, "HelloWorld.png", 100, 60, 0.5f, vec3(0.f, 0.f, 0.f));*/
-
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-		ui = entity;
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-
-		//Set up the components
-		std::string fileName = "UI.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 160, 40);
-		ECS::GetComponent<Sprite>(entity).SetTransparency(1.f);
-
-		b2Vec2 witcherPos = ECS::GetComponent<PhysicsBody>(witcher).GetPosition();
-		ECS::GetComponent<Transform>(entity).SetPosition(witcherPos.x, witcherPos.y, 0);
-	
-	}
-	
-	//Setup static Platform
-	{
-		//Creates entity
-		auto entity = ECS::CreateEntity();
-
-		//Add components
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-		ECS::AttachComponent<PhysicsBody>(entity);
-
-		//Sets up components
-		std::string fileName = "boxSprite.jpg";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 150, 10);
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
-
-		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
-		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
-
-		float shrinkX = 0.f;
-		float shrinkY = 0.f;
-		b2Body* tempBody;
-		b2BodyDef tempDef;
-		tempDef.type = b2_staticBody;
-		tempDef.position.Set(float32(1780.f), float32(25.2f));
-
-		tempBody = m_physicsWorld->CreateBody(&tempDef);
-
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX),
-			float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, GROUND, PLAYER | ENEMY | OBJECTS);
-		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
-	}
 	//Setup static wall(gate)
 	{
 		//Creates entity
@@ -931,6 +790,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 			float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, GROUND, PLAYER | ENEMY | OBJECTS);
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 	}
+
 	//Setup static Platform
 	{
 		//Creates entity
@@ -962,6 +822,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 			float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, GROUND, PLAYER | ENEMY | OBJECTS);
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 	}
+
 	//Setup static Platform
 	{
 		//Creates entity
@@ -993,6 +854,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 			float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, GROUND, PLAYER | ENEMY | OBJECTS);
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 	}
+
 	//Setup static Platform
 	{
 		//Creates entity
@@ -1024,6 +886,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 			float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, GROUND, PLAYER | ENEMY | OBJECTS);
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 	}
+
 	//Setup static Platform
 	{
 		//Creates entity
@@ -1120,6 +983,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(20.f);
 	}
+
 	//Setup static Platform
 	{
 		//Creates entity
@@ -1152,6 +1016,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		
 	}
+
 	//Setup static Platform
 	{
 		//Creates entity
@@ -1217,6 +1082,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		
 	}
+
 	//Setup static Platform
 	{
 		//Creates entity
@@ -1249,6 +1115,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+
 	//Setup Top Of Gate Platform
 	{
 		//Creates entity
@@ -1281,8 +1148,8 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+
 	//Setup path
-	
 	{
 		//Creates entity
 		auto entity = ECS::CreateEntity();
@@ -1314,6 +1181,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+
 	//Setup Bandit path 1
 	{
 		//Creates entity
@@ -1346,6 +1214,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(30.f);
 	}
+
 	//Setup cave rubble 
 	/*{
 		//Creates entity
@@ -2010,6 +1879,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+
 	//Setup Bandit Secret Path exit
 	{
 		//Creates entity
@@ -2042,6 +1912,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(30.f);
 	}
+
 	//Setup Bandit path 2
 	{
 		//Creates entity
@@ -2074,6 +1945,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(30.f);
 	}
+
 	//Setup hill falt 
 	{
 		//Creates entity
@@ -2106,6 +1978,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		
 	}
+
 	//Set up hill 3 
 	{
 		//Creates entity
@@ -2138,6 +2011,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(30.f);
 	}
+
 	//Sets up hill flat 2 
 	{
 		//Creates entity
@@ -2170,6 +2044,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		
 	}
+
 	//Set up Bandit hill down 
 	{
 		//Creates entity
@@ -2202,6 +2077,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(145.f);
 	}
+
 	//Set up Bandit flat
 	{
 		//Creates entity
@@ -2234,6 +2110,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		
 	}
+
 	//Set up Bandit hill up
 	{
 		//Creates entity
@@ -2266,6 +2143,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(30.f);
 	}
+
 	//Set up Bandit Platform 4
 	{
 		//Creates entity
@@ -2298,7 +2176,6 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
-
 
 	//Set up Bandit camp wall 
 	{
@@ -2333,7 +2210,6 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 
 	}
 	
-	
 	//Bandit Platform 1 
 	{
 		//Creates entity
@@ -2366,6 +2242,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+	
 	//Set up Bandit Platform 2 
 	{
 		//Creates entity
@@ -2398,6 +2275,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+	
 	//Set up Bandit platform 3
 	{
 		//Creates entity
@@ -2430,6 +2308,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+
 	//Set up Bandit Platform 4
 	{
 		//Creates entity
@@ -2462,6 +2341,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+	
 	//Set up Bandit hidden entrence 
 	{
 		//Creates entity
@@ -2494,6 +2374,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+	
 	//Sets up Bandit passage wall 
 	{
 		//Creates entity
@@ -2526,6 +2407,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 
 	}
+	
 	//set up other wall for passage
 	{
 		//Creates entity
@@ -2558,13 +2440,69 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		tempPhsBody.SetColor(vec4(0.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(180.f);
 	}
+
+
+	MakeBandit("bandit.png", 1520.f, 50.f);
+	MakeBandit("bandit2.png", 1100.f, 50.f);
+	
+	for (int i = 0; i < 20; i++) {
+
+		MakeBandit("bandit.png", 1000.f + (i * 50), 50.f);
+
+	}
+
+
+
 	ECS::GetComponent<HorizontalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
 	ECS::GetComponent<VerticalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
 
 }
 
-void PhysicsPlayground::Update()
-{
+void PhysicsPlayground::MakeBandit(std::string fileName,  float32 x, float32 y) {
+
+	// BANDIT
+
+	auto entity = ECS::CreateEntity();
+	bandit.push_back(entity);
+
+	ECS::AttachComponent<Sprite>(entity);
+	ECS::AttachComponent<Transform>(entity);
+	ECS::AttachComponent<PhysicsBody>(entity);
+	ECS::AttachComponent<Trigger*>(entity);
+	ECS::AttachComponent<HP>(entity);
+
+	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 30, 50);
+	ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
+	ECS::GetComponent<Trigger*>(entity) = new DestroyTrigger();
+	ECS::GetComponent<Trigger*>(entity)->SetTriggerEntity(entity);
+	ECS::GetComponent<Trigger*>(entity)->AddTargetEntity(sword);
+	ECS::GetComponent<Trigger*>(entity)->AddTargetEntity(bomb);
+
+	auto& tempSpr = ECS::GetComponent<Sprite>(entity);
+	auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
+
+	float shrinkX = 0.f;
+	float shrinkY = 0.f;
+	b2Body* tempBody;
+	b2BodyDef tempDef;
+	tempDef.type = b2_dynamicBody;
+	tempDef.position.Set(x, y);
+
+	tempBody = m_physicsWorld->CreateBody(&tempDef);
+	tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY), vec2(0.f, 0.f), false, ENEMY, GROUND | BOMB | OBJECTS);
+	tempPhsBody.SetColor(vec4(1.f, 1.f, 0.f, 0.5f));
+
+	// HP BAR
+
+	entity = ECS::CreateEntity();
+	banditHP.push_back(entity);
+
+	ECS::AttachComponent<Sprite>(entity);
+	ECS::AttachComponent<Transform>(entity);
+
+}
+
+void PhysicsPlayground::Update() {
 
 	ECS::GetComponent<HorizontalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
 	ECS::GetComponent<VerticalScroll>(MainEntities::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(MainEntities::MainPlayer()));
@@ -2576,18 +2514,31 @@ void PhysicsPlayground::KeyboardHold() {
 
 	auto& player = ECS::GetComponent<PhysicsBody>(MainEntities::MainPlayer());
 
-	vec2 camSize = ECS::GetComponent<Camera>(camera).GetWindowSize();
-	//ECS::GetComponent<Sprite>(ui).Get
-
-	//b2Vec2 witcherPos = ECS::GetComponent<PhysicsBody>(witcher).GetPosition();
-	//ECS::GetComponent<Transform>(ui).SetPosition(witcherPos.x + camSize.x, witcherPos.y + camSize.y - , 0);
-
 	float speed = 1.f;
 	b2Vec2 vel = b2Vec2(0.f, 0.f);
 
+	for (int i = 0; i < bandit.size(); i++) {
+	
+		if (ECS::GetComponent<HP>(bandit[i]).m_health <= 0) {
+
+			ECS::GetComponent<Sprite>(banditHP[i]).SetTransparency(0.f);
+
+		}
+		
+		else {
+
+			std::string fileName = "hp" + std::to_string(ECS::GetComponent<HP>(bandit[i]).m_health) + ".png";
+			ECS::GetComponent<Sprite>(banditHP[i]).LoadSprite(fileName, 40, 5);
+			b2Vec2 banditPos = ECS::GetComponent<PhysicsBody>(bandit[i]).GetPosition();
+			ECS::GetComponent<Transform>(banditHP[i]).SetPosition(vec3(banditPos.x, banditPos.y + 30, 1.f));
+
+		}
+
+	}
+
 	// Changes direction of sprite
 	if (facingRight) {
-
+	
 		//Sets up the components
 		std::string fileName = "witcherRight.png";
 		ECS::GetComponent<Sprite>(witcher).LoadSprite(fileName, 40, 40);
@@ -2624,9 +2575,49 @@ void PhysicsPlayground::KeyboardHold() {
 	}
 
 	/*
-	Sword
+	Dash
 	*/
 
+	// Dash Order
+	// 1. Dash
+	// 2. Cooldown
+	// 3. Refresh Cooldown
+
+	if (Input::GetKey(Key::E) && !dashing) {
+	
+		if (facingRight) {
+
+			directionMod = 1;
+
+		}
+		if (facingLeft) {
+
+			directionMod = -1;
+
+		}
+
+		dashing = true;
+		ECS::GetComponent<PhysicsBody>(witcher).GetBody()->ApplyForceToCenter(b2Vec2(800000000000000.f * directionMod * speed, 0.f), true);
+	
+	}
+
+	if (dashing && dashTime < 5.0) {
+
+		dashTime += Timer::deltaTime;
+
+	}
+
+	else if (dashing && dashTime > 5.0) {
+	
+		dashing = false;
+		dashTime = 0.f;
+
+	}
+
+
+	/*
+	Sword
+	*/
 
 	// Sword Order
 	// 1. Player Swings Sword
@@ -2660,9 +2651,9 @@ void PhysicsPlayground::KeyboardHold() {
 
 		//Sets up components
 		
-		std::string fileName;
+		std::string fileName = "sword.png";
 
-		if (changeSword) 
+		if (ECS::GetComponent<Sword>(witcher).changeSword)
 		{
 			fileName = "sword.png";
 		}
@@ -2671,9 +2662,9 @@ void PhysicsPlayground::KeyboardHold() {
 			fileName = "sword2.png";
 		}
 
-		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 12, 48);
-
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -20.f, 2.f));
+		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 9, 36);
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(30.f, -2000.f, 2.f));
+		ECS::GetComponent<Sprite>(entity).SetTransparency(0.f);
 
 		auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 		auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
@@ -2683,11 +2674,11 @@ void PhysicsPlayground::KeyboardHold() {
 		b2Body* tempBody;
 		b2BodyDef tempDef;
 		tempDef.type = b2_staticBody;
-		tempDef.position.Set(player.GetPosition().x + (40 * directionMod), player.GetPosition().y);
+		tempDef.position.Set(player.GetPosition().x + (10 * directionMod), player.GetPosition().y);
 
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
 
-		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth()) - 6, float(tempSpr.GetHeight() - 6), vec2(0.f, 0.f), false, OBJECTS, ENEMY | GROUND);
+		tempPhsBody = PhysicsBody(entity, tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight()), vec2(0.f, 0.f), false, OBJECTS, GROUND);
 		tempPhsBody.SetColor(vec4(1.f, 1.f, 0.f, 0.3f));
 		tempPhsBody.SetRotationAngleDeg(-45.f * directionMod);
 
@@ -2698,7 +2689,8 @@ void PhysicsPlayground::KeyboardHold() {
 	
 		swordTime += Timer::deltaTime;
 		ECS::GetComponent<PhysicsBody>(sword).SetRotationAngleDeg(ECS::GetComponent<PhysicsBody>(sword).GetRotationAngleDeg() - 1 * directionMod);
-		ECS::GetComponent<PhysicsBody>(sword).SetPosition(b2Vec2(player.GetPosition().x + (40 * directionMod), player.GetPosition().y));
+		ECS::GetComponent<PhysicsBody>(sword).SetPosition(b2Vec2(player.GetPosition().x + (13 * directionMod), player.GetPosition().y - 3.5));
+		ECS::GetComponent<Sprite>(sword).SetTransparency(1.f);
 
 	}
 	
@@ -2714,9 +2706,9 @@ void PhysicsPlayground::KeyboardHold() {
 	}
 
 	// Change Sword
-	if (Input::GetKey(Key::Q) && !swordSwinging) {
+	if (Input::GetKey(Key::G) && !swordSwinging) {
 
-		changeSword = !changeSword;
+		ECS::GetComponent<Sword>(witcher).changeSword = !ECS::GetComponent<Sword>(witcher).changeSword;
 
 	}
 
@@ -2732,7 +2724,7 @@ void PhysicsPlayground::KeyboardHold() {
 	// 4. Explosion Stops
 	
 	// 1.
-	if (Input::GetKey(Key::E) && !bombThrown) {
+	if (Input::GetKey(Key::R) && !bombThrown) {
 
 		if (facingRight) {
 

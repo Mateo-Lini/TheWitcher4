@@ -13,7 +13,8 @@
 #include "DestroyTrigger.h"
 #include "HorizontalScroll.h"
 #include "CanJump.h"
-
+#include "HP.h"
+#include "Sword.h"
 
 class ECS abstract
 {

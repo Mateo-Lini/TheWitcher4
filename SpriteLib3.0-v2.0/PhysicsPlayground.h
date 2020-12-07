@@ -11,6 +11,8 @@ public:
 
 	void InitScene(float windowWidth, float windowHeight) override;
 
+	void MakeBandit(std::string fileName, float32 x, float32 y);
+
 	void Update() override;
 
 	//Input overrides
@@ -20,27 +22,26 @@ public:
 	
 protected:
 	PhysicsPlaygroundListener listener;
-
 	int ball = 0;
 	int bomb = 0;
 	int explosion = 0;
 	int sword = 0;
-	int witcher = 0;
-	int bandit = 0;
-	int bandit2 = 0;
 
+	int witcher = 0;
+	int witcher2 = 0;
+
+	std::vector<int> bandit;
+	std::vector<int> banditHP;
 
 	int ui = 0;
 	int village = 0;
-	
-	int width;
-	int height;
 
 	int camera = 0;
 
-	bool changeSword = false;
-
 	int directionMod = 1;
+
+	double dashTime = 0.f;
+	bool dashing = false;
 
 	bool facingRight = true;
 	bool facingLeft = false;
